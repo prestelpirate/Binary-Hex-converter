@@ -1,0 +1,240 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script language="javascript" type="text/javascript">
+			function h_initArray() {
+    this.length = h_initArray.arguments.length;
+    for (var i = 0; i < this.length; i++)
+        this[i] = h_initArray.arguments[i];
+}
+		
+			function h_from10toradix(value,radix){
+ 			    var retval = '';
+			    var ConvArray = new h_initArray(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F');
+			    var intnum;
+			    var tmpnum;
+			    var i = 0;
+
+ 			    intnum = parseInt(value,10);
+			    if (isNaN(intnum)){
+			        retval = 'NaN';
+			    }else{
+			        if (intnum < 1){
+			            retval ="0";
+			        }else{
+			            retval = "";
+			        }
+			        while (intnum > 0.9){
+			            i++;
+			            tmpnum = intnum;
+			            // cancatinate return string with new digit:
+			            retval = ConvArray[tmpnum % radix] + retval;  
+			            intnum = Math.floor(tmpnum / radix);
+			            if (i > 100){
+			                // break infinite loops
+			                retval = 'NaN';
+			                break;
+			            }
+			        }
+		    }
+		    return retval;
+		}
+
+		function h_paddto2(str) {
+		    while(str.length <2){
+		        str= "0" + str;
+		    }
+		    return(str);
+		}
+
+		function h_paddto8(str) {
+		    while(str.length <8){
+		        str= "0" + str;
+		    }
+		    return(str);
+		}
+function h_countbitsfromleft(num)
+{
+    if (num == 255 ){
+        return(8);
+    }
+    i = 0;
+    bitpat=0xff00; 
+    while (i < 8){
+        if (num == (bitpat & 0xff)){
+            return(i);
+        }
+        bitpat=bitpat >> 1;
+        i++;
+    }
+    return(Number.NaN);
+}
+
+function calcNWbits(cform)
+{
+    sumofbits=0;
+    tmpvar = parseInt(cform.snm_1.value,10);
+    if (isNaN(tmpvar)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    bitsfromleft=h_countbitsfromleft(tmpvar);
+    if (isNaN(bitsfromleft)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    sumofbits+=bitsfromleft;
+    //
+    tmpvar = parseInt(cform.snm_2.value,10);
+    if (isNaN(tmpvar)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    bitsfromleft=h_countbitsfromleft(tmpvar);
+    if (isNaN(bitsfromleft)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    sumofbits+=bitsfromleft;
+    //
+    tmpvar = parseInt(cform.snm_3.value,10);
+    if (isNaN(tmpvar)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    bitsfromleft=h_countbitsfromleft(tmpvar);
+    if (isNaN(bitsfromleft)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    sumofbits+=bitsfromleft;
+    //
+    tmpvar = parseInt(cform.snm_4.value,10);
+    if (isNaN(tmpvar)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    bitsfromleft=h_countbitsfromleft(tmpvar);
+    if (isNaN(bitsfromleft)){
+        cform.result.value = 'invalid';
+        return;
+    }
+    sumofbits+=bitsfromleft;
+    cform.result.value = sumofbits;
+    return;
+}
+
+function resetform1(cform) {
+    cform.result.value="";
+    cform.snm_1.value=255;
+    cform.snm_2.value=255;
+    cform.snm_3.value=255;
+    cform.snm_4.value=0;
+}
+
+//--------------------------
+
+function h_fillbitsfromleft(num)
+{
+    if (num >= 8 ){
+        return(255);
+    }
+    bitpat=0xff00; 
+    while (num > 0){
+        bitpat=bitpat >> 1;
+        num--;
+    }
+    return(bitpat & 0xff);
+}
+
+function calcNWmask(cform)
+{
+    tmpvar = parseInt(cform.bits.value,10);
+    if (isNaN(tmpvar) || tmpvar > 32 || tmpvar < 0){
+        cform.snm_1.value = 'ERR';
+        cform.snm_2.value="";
+        cform.snm_3.value="";
+        cform.snm_4.value="";
+        return(1);
+    }
+    cform.snm_1.value=0;
+    cform.snm_2.value=0;
+    cform.snm_3.value=0;
+    cform.snm_4.value=0;
+    if (tmpvar >= 8){
+        cform.snm_1.value = 255;
+        tmpvar-=8;
+    }else{
+        cform.snm_1.value = h_fillbitsfromleft(tmpvar);
+        return(0);
+    }
+    if (tmpvar >= 8){
+        cform.snm_2.value = 255;
+        tmpvar-=8;
+    }else{
+        cform.snm_2.value = h_fillbitsfromleft(tmpvar);
+        return(0);
+    }
+    if (tmpvar >= 8){
+        cform.snm_3.value = 255;
+        tmpvar-=8;
+    }else{
+        cform.snm_3.value = h_fillbitsfromleft(tmpvar);
+        return(0);
+    }
+    cform.snm_4.value = h_fillbitsfromleft(tmpvar);
+    return(0);
+}
+
+
+			function resetform9(cform) {
+			    cform.dec_1.value="";
+			    cform.bin_1.value="";
+			    cform.num.value="";
+			}
+
+			function convertnum_hex(cform){
+			    cform.dec_1.value="";
+			    cform.bin_1.value="";
+			    //
+			    tmpvar=cform.num.value.replace(/0x/i,"");
+			    cform.num.value=tmpvar;
+			    tmpvar = parseInt(cform.num.value,16);
+			    if (isNaN(tmpvar) ){
+			        cform.dec_1.value = 'NaN';
+ 			        cform.bin_1.value = 'NaN';
+			        return;
+			    }
+		   	    cform.dec_1.value = tmpvar;
+			    cform.bin_1.value = h_from10toradix(tmpvar,2);
+			}
+		</script>
+		<title>Convert hex to binary and decimal</title>
+	</head>
+	<body onload="init();">
+		<table width="100%">
+			<tr width="100%">
+				<td align="center"><a href="index.html">Convert decimal to binary and hex</a></td>
+				<td align="center"><a href="bindechex.html">Convert binary to decimal and hex</a></td>
+				<td align="center"><b>Convert hex to binary and decimal</b></td>
+			</tr>
+		</table>
+		<hr>
+		<h3>Convert hex to decimal and binary </h3>
+          <form>
+			Hex:<br><input name="num" size="8" class="in" type="text"> 
+			<br>
+			<input value=" Calculate " onclick="convertnum_hex(this.form)" type="button">  
+			<input value=" Reset " onclick="resetform9(this.form)" type="button">
+			<br>
+			<br>
+			<h3>Results:</h3>
+			Dec:<br>
+			<input name="dec_1" size="11" readonly="readonly" type="text"> 
+			<br>Bin:<br>
+			<input name="bin_1" size="24" readonly="readonly" type="text"> 
+          </form>
+	
+	</body>
+</html>
